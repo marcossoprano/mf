@@ -1,0 +1,296 @@
+import React, { useState } from 'react';
+import Sidebar from '../components/menu-lateral';
+import {
+  Box,
+  Button,
+  Tabs,
+  Tab,
+  TextField,
+  Typography,
+  MenuItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  InputAdornment
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import rotaImage from '../assets/images/rota.png';
+
+function Rotas() {
+  const [tabIndex, setTabIndex] = useState(0);
+  const [formularios, setFormularios] = useState([{ id: 1 }]);
+
+  const handleTabChange = (event, newValue) => {
+    setTabIndex(newValue);
+  };
+
+  const adicionarFormulario = () => {
+    setFormularios([...formularios, { id: formularios.length + 1 }]);
+  };
+
+  const renderFormularioCadastro = (id) => (
+    <Box key={id} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <Box>
+        <Typography variant="body2" className="mb-1 font-medium">Previsão de tempo</Typography>
+        <TextField fullWidth size="small" placeholder="Ex: 2h" />
+      </Box>
+
+      <Box>
+        <Typography variant="body2" className="mb-1 font-medium">Nome do Motorista</Typography>
+        <TextField fullWidth size="small" placeholder="Digite o nome do motorista" />
+      </Box>
+
+      <Box>
+        <Typography variant="body2" className="mb-1 font-medium">Local de Partida</Typography>
+        <TextField fullWidth size="small" placeholder="Ex: Mercadinho do José" />
+      </Box>
+
+     <Box>
+    <Typography variant="body2" className="mb-1 font-medium">Destinos</Typography>
+    <TextField
+        select
+        fullWidth
+        size="small"
+        defaultValue=""
+    >
+        <MenuItem value="">Selecione o cliente</MenuItem>
+        <MenuItem value="Cliente 1">Cliente 1</MenuItem>
+        <MenuItem value="Cliente 2">Cliente 2</MenuItem>
+        <MenuItem value="Cliente 3">Cliente 3</MenuItem>
+    </TextField>
+    </Box>
+
+
+      <Box>
+        <Typography variant="body2" className="mb-1 font-medium">Gasto com Gasolina</Typography>
+        <TextField fullWidth size="small" placeholder="Ex: R$ 50,00" />
+      </Box>
+
+      <Box>
+        <Typography variant="body2" className="mb-1 font-medium">Status</Typography>
+        <TextField fullWidth size="small" placeholder="Ex: Em andamento" />
+      </Box>
+    </Box>
+  );
+
+  return (
+    <div className="flex">
+      <Sidebar />
+
+      <div className="flex-1 ml-0 lg:ml-64 p-8 font-sans">
+        {/* Botão Superior */}
+        <Box className="flex space-x-4 mb-12">
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: '#4BA9F7',
+              textTransform: 'none',
+              '&:hover': {
+                backgroundColor: '#3590d8',
+              },
+            }}
+          >
+            Gerenciar Rotas
+          </Button>
+        </Box>
+
+        {/* Título */}
+        <Typography variant="h4" className="font-bold mb-8 text-gray-800" sx={{ fontSize: '32px' }}>
+          Gerencie suas rotas!
+        </Typography>
+
+        {/* Espaço entre título e tabs */}
+        <div className="mb-8"></div>
+
+        {/* Tabs */}
+        <Tabs value={tabIndex} onChange={handleTabChange} textColor="primary" indicatorColor="primary" className="mb-6">
+          <Tab label="Cadastrar Nova Rota" />
+          <Tab label="Gerar Sugestões de Rotas" />
+          <Tab label="Consultar Rotas" />
+        </Tabs>
+
+        {/* Aba 1 - Cadastrar Nova Rota */}
+        {tabIndex === 0 && (
+          <Box>
+            {formularios.map((form) => renderFormularioCadastro(form.id))}
+
+            <Box className="flex items-center mb-6">
+              <Button
+                variant="outlined"
+                startIcon={<span>＋</span>}
+                onClick={adicionarFormulario}
+                sx={{
+                  textTransform: 'none',
+                  borderColor: '#c2c2c2',
+                  color: '#4B4B4B',
+                  '&:hover': {
+                    backgroundColor: '#f0f0f0',
+                  },
+                }}
+              >
+                Adicione mais uma rota
+              </Button>
+            </Box>
+
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: '#25AABF',
+                textTransform: 'none',
+                '&:hover': {
+                  backgroundColor: '#1e90a3',
+                },
+              }}
+            >
+              Cadastrar
+            </Button>
+          </Box>
+        )}
+
+        {/* Aba 2 - Gerar Sugestões de Rotas */}
+        {tabIndex === 1 && (
+          <Box className="flex flex-col items-center mt-8">
+            {/* Imagem centralizada */}
+            <img
+              src={rotaImage}
+              alt="Imagem Rota"
+              className="mb-8 max-w-xs"
+            />
+
+            {/* Formulário */}
+            <Box className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mb-6">
+              <Box>
+                <Typography variant="body2" className="mb-1 font-medium">Local de Partida</Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="Digite o local de partida"
+                />
+              </Box>
+
+              <Box>
+                <Typography variant="body2" className="mb-1 font-medium">Nome do Motorista</Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="Digite o nome do motorista"
+                />
+              </Box>
+
+              <Box className="md:col-span-1 w-1/2">
+                <Typography variant="body2" className="mb-1 font-medium">Novo destino</Typography>
+                <TextField
+                  select
+                  size="small"
+                  defaultValue=""
+                  sx={{ minWidth: '200px' }}
+                >
+                  <option value="">Selecione o destino</option>
+                  <option value="Centro">Cliente 1</option>
+                  <option value="Bairro Industrial">Cliente 2</option>
+                  <option value="Zona Rural">Cliente 3</option>
+                </TextField>
+              </Box>
+            </Box>
+
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: '#25AABF',
+                textTransform: 'none',
+                '&:hover': {
+                  backgroundColor: '#F37335',
+                },
+              }}
+            >
+              Gerar Rota
+            </Button>
+          </Box>
+        )}
+
+        {/* Aba 3 - Consultar Rotas */}
+        {tabIndex === 2 && (
+          <>
+            <Typography variant="h4" className="font-bold mb-8 text-gray-800" sx={{ fontSize: '32px' }}>
+              Veja todas as suas rotas!
+            </Typography>
+
+            <div className="mb-8"></div>
+
+            {/* Filtro + Pesquisa */}
+            <Box className="flex space-x-4 mb-6">
+              <TextField
+                select
+                size="small"
+                label="Filtrar por"
+                defaultValue=""
+                sx={{ minWidth: 150 }}
+              >
+                <MenuItem value="">Todos</MenuItem>
+                <MenuItem value="Concluída">Concluída</MenuItem>
+                <MenuItem value="A começar">A começar</MenuItem>
+                <MenuItem value="Em Andamento">Em Andamento</MenuItem>
+              </TextField>
+
+              <TextField
+                size="small"
+                placeholder="Digite o ID da rota ou nome do motorista..."
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
+
+            {/* Tabela */}
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell><strong>ID</strong></TableCell>
+                    <TableCell><strong>Motorista</strong></TableCell>
+                    <TableCell><strong>Gasto – Combustível</strong></TableCell>
+                    <TableCell><strong>Tempo</strong></TableCell>
+                    <TableCell><strong>Data</strong></TableCell>
+                    <TableCell><strong>Status</strong></TableCell>
+                    <TableCell><strong>Número de Clientes</strong></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {[
+                    { id: '123243', motorista: 'João Santos', gasto: 30, tempo: '2h', data: '12/05/2025', status: 'Concluída', clientes: 3 },
+                    { id: '1212434', motorista: 'André Oliveira', gasto: 12, tempo: '30min', data: '12/08/2025', status: 'A começar', clientes: 1 },
+                    { id: '1298912', motorista: 'Manoel Ferrei', gasto: 20, tempo: '1h', data: '11/09/2026', status: 'Concluída', clientes: 2 },
+                    { id: '242385', motorista: 'José Antonio', gasto: 25, tempo: '55min', data: '29/08/2027', status: 'Concluída', clientes: 4 },
+                    { id: '1387284', motorista: 'André Ferreira', gasto: 35, tempo: '25min', data: '25/09/2024', status: 'A começar', clientes: 2 },
+                  ].map((rota, index) => (
+                    <TableRow key={rota.id} sx={{ backgroundColor: index % 2 === 0 ? '#f0f8ff' : 'white' }}>
+                      <TableCell>{rota.id}</TableCell>
+                      <TableCell>{rota.motorista}</TableCell>
+                      <TableCell>{rota.gasto}</TableCell>
+                      <TableCell>{rota.tempo}</TableCell>
+                      <TableCell>{rota.data}</TableCell>
+                      <TableCell>{rota.status}</TableCell>
+                      <TableCell>{rota.clientes}</TableCell>
+                    
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default Rotas;
