@@ -11,7 +11,7 @@ import Configuracoes from './pages/Configuracoes';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/teste-frontend-MILO">
       <Routes>
         <Route path="/" element={<LoginPage/>} />
         <Route path="/pagina-inicial" element={<PaginaInicial />} />
