@@ -23,13 +23,24 @@ import rotaImage from '../assets/images/rota.png';
 function Rotas() {
   const [tabIndex, setTabIndex] = useState(0);
   const [formularios, setFormularios] = useState([{ id: 1 }]);
+  const [destinosCadastro, setDestinosCadastro] = useState(['']);
+  const [destinosSugestao, setDestinosSugestao] = useState(['']);
 
-  const handleTabChange = (event, newValue) => {
-    setTabIndex(newValue);
+  const handleTabChange = (event, newValue) => setTabIndex(newValue);
+  const adicionarFormulario = () => setFormularios([...formularios, { id: formularios.length + 1 }]);
+
+  const adicionarDestinoCadastro = () => setDestinosCadastro([...destinosCadastro, '']);
+  const handleDestinoCadastroChange = (index, value) => {
+    const novos = [...destinosCadastro];
+    novos[index] = value;
+    setDestinosCadastro(novos);
   };
 
-  const adicionarFormulario = () => {
-    setFormularios([...formularios, { id: formularios.length + 1 }]);
+  const adicionarDestinoSugestao = () => setDestinosSugestao([...destinosSugestao, '']);
+  const handleDestinoSugestaoChange = (index, value) => {
+    const novos = [...destinosSugestao];
+    novos[index] = value;
+    setDestinosSugestao(novos);
   };
 
   const renderFormularioCadastro = (id) => (
@@ -49,21 +60,35 @@ function Rotas() {
         <TextField fullWidth size="small" placeholder="Ex: Mercadinho do José" />
       </Box>
 
-     <Box>
-    <Typography variant="body2" className="mb-1 font-medium">Destinos</Typography>
-    <TextField
-        select
-        fullWidth
-        size="small"
-        defaultValue=""
-    >
-        <MenuItem value="">Selecione o cliente</MenuItem>
-        <MenuItem value="Cliente 1">Cliente 1</MenuItem>
-        <MenuItem value="Cliente 2">Cliente 2</MenuItem>
-        <MenuItem value="Cliente 3">Cliente 3</MenuItem>
-    </TextField>
-    </Box>
-
+      {/* Destinos Dinâmicos - Aba Cadastro */}
+      <Box className="md:col-span-2">
+        <Typography variant="body2" className="mb-1 font-medium">Destinos</Typography>
+        {destinosCadastro.map((dest, index) => (
+          <TextField
+            key={index}
+            fullWidth
+            size="small"
+            placeholder={`Digite o endereço do destino ${index + 1}`}
+            value={dest}
+            onChange={(e) => handleDestinoCadastroChange(index, e.target.value)}
+            className="mb-2"
+          />
+        ))}
+        <Button
+          variant="outlined"
+          size="small"
+          sx={{
+            textTransform: 'none',
+            mt: 1,
+            borderColor: '#c2c2c2',
+            color: '#4B4B4B',
+            '&:hover': { backgroundColor: '#f0f0f0' },
+          }}
+          onClick={adicionarDestinoCadastro}
+        >
+          Adicionar outro destino
+        </Button>
+      </Box>
 
       <Box>
         <Typography variant="body2" className="mb-1 font-medium">Gasto com Gasolina</Typography>
@@ -89,9 +114,7 @@ function Rotas() {
             sx={{
               backgroundColor: '#4BA9F7',
               textTransform: 'none',
-              '&:hover': {
-                backgroundColor: '#3590d8',
-              },
+              '&:hover': { backgroundColor: '#3590d8' },
             }}
           >
             Gerenciar Rotas
@@ -103,7 +126,6 @@ function Rotas() {
           Gerencie suas rotas!
         </Typography>
 
-        {/* Espaço entre título e tabs */}
         <div className="mb-8"></div>
 
         {/* Tabs */}
@@ -127,9 +149,7 @@ function Rotas() {
                   textTransform: 'none',
                   borderColor: '#c2c2c2',
                   color: '#4B4B4B',
-                  '&:hover': {
-                    backgroundColor: '#f0f0f0',
-                  },
+                  '&:hover': { backgroundColor: '#f0f0f0' },
                 }}
               >
                 Adicione mais uma rota
@@ -141,9 +161,7 @@ function Rotas() {
               sx={{
                 backgroundColor: '#25AABF',
                 textTransform: 'none',
-                '&:hover': {
-                  backgroundColor: '#1e90a3',
-                },
+                '&:hover': { backgroundColor: '#1e90a3' },
               }}
             >
               Cadastrar
@@ -154,46 +172,47 @@ function Rotas() {
         {/* Aba 2 - Gerar Sugestões de Rotas */}
         {tabIndex === 1 && (
           <Box className="flex flex-col items-center mt-8">
-            {/* Imagem centralizada */}
-            <img
-              src={rotaImage}
-              alt="Imagem Rota"
-              className="mb-8 max-w-xs"
-            />
+            <img src={rotaImage} alt="Imagem Rota" className="mb-8 max-w-xs" />
 
-            {/* Formulário */}
             <Box className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mb-6">
               <Box>
                 <Typography variant="body2" className="mb-1 font-medium">Local de Partida</Typography>
-                <TextField
-                  fullWidth
-                  size="small"
-                  placeholder="Digite o local de partida"
-                />
+                <TextField fullWidth size="small" placeholder="Digite o local de partida" />
               </Box>
 
               <Box>
                 <Typography variant="body2" className="mb-1 font-medium">Nome do Motorista</Typography>
-                <TextField
-                  fullWidth
-                  size="small"
-                  placeholder="Digite o nome do motorista"
-                />
+                <TextField fullWidth size="small" placeholder="Digite o nome do motorista" />
               </Box>
 
-              <Box className="md:col-span-1 w-1/2">
-                <Typography variant="body2" className="mb-1 font-medium">Novo destino</Typography>
-                <TextField
-                  select
+              {/* Destinos Dinâmicos - Aba Sugestões */}
+              <Box className="md:col-span-2">
+                <Typography variant="body2" className="mb-1 font-medium">Destinos</Typography>
+                {destinosSugestao.map((dest, index) => (
+                  <TextField
+                    key={index}
+                    fullWidth
+                    size="small"
+                    placeholder={`Digite o endereço do destino ${index + 1}`}
+                    value={dest}
+                    onChange={(e) => handleDestinoSugestaoChange(index, e.target.value)}
+                    className="mb-2"
+                  />
+                ))}
+                <Button
+                  variant="outlined"
                   size="small"
-                  defaultValue=""
-                  sx={{ minWidth: '200px' }}
+                  sx={{
+                    textTransform: 'none',
+                    mt: 1,
+                    borderColor: '#c2c2c2',
+                    color: '#4B4B4B',
+                    '&:hover': { backgroundColor: '#f0f0f0' },
+                  }}
+                  onClick={adicionarDestinoSugestao}
                 >
-                  <option value="">Selecione o destino</option>
-                  <option value="Centro">Cliente 1</option>
-                  <option value="Bairro Industrial">Cliente 2</option>
-                  <option value="Zona Rural">Cliente 3</option>
-                </TextField>
+                  Adicionar outro destino
+                </Button>
               </Box>
             </Box>
 
@@ -202,9 +221,7 @@ function Rotas() {
               sx={{
                 backgroundColor: '#25AABF',
                 textTransform: 'none',
-                '&:hover': {
-                  backgroundColor: '#F37335',
-                },
+                '&:hover': { backgroundColor: '#F37335' },
               }}
             >
               Gerar Rota
@@ -221,7 +238,6 @@ function Rotas() {
 
             <div className="mb-8"></div>
 
-            {/* Filtro + Pesquisa */}
             <Box className="flex space-x-4 mb-6">
               <TextField
                 select
@@ -250,7 +266,6 @@ function Rotas() {
               />
             </Box>
 
-            {/* Tabela */}
             <TableContainer component={Paper}>
               <Table>
                 <TableHead>
@@ -268,7 +283,7 @@ function Rotas() {
                   {[
                     { id: '123243', motorista: 'João Santos', gasto: 30, tempo: '2h', data: '12/05/2025', status: 'Concluída', clientes: 3 },
                     { id: '1212434', motorista: 'André Oliveira', gasto: 12, tempo: '30min', data: '12/08/2025', status: 'A começar', clientes: 1 },
-                    { id: '1298912', motorista: 'Manoel Ferrei', gasto: 20, tempo: '1h', data: '11/09/2026', status: 'Concluída', clientes: 2 },
+                    { id: '1298912', motorista: 'Manoel Ferreira', gasto: 20, tempo: '1h', data: '11/09/2026', status: 'Concluída', clientes: 2 },
                     { id: '242385', motorista: 'José Antonio', gasto: 25, tempo: '55min', data: '29/08/2027', status: 'Concluída', clientes: 4 },
                     { id: '1387284', motorista: 'André Ferreira', gasto: 35, tempo: '25min', data: '25/09/2024', status: 'A começar', clientes: 2 },
                   ].map((rota, index) => (
@@ -280,7 +295,6 @@ function Rotas() {
                       <TableCell>{rota.data}</TableCell>
                       <TableCell>{rota.status}</TableCell>
                       <TableCell>{rota.clientes}</TableCell>
-                    
                     </TableRow>
                   ))}
                 </TableBody>
