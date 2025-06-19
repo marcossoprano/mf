@@ -32,19 +32,20 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen font-sans bg-gradient-to-br from-green-100 via-blue-100 to-blue-200">
-      <Paper elevation={6} className="flex flex-col lg:flex-row rounded-2xl overflow-hidden w-full max-w-5xl shadow-2xl backdrop-blur-sm">
-        
-        {/* Imagem lateral */}
+    <div className="flex items-center justify-center min-h-screen font-sans bg-gradient-to-br from-green-100 via-blue-100 to-blue-200 p-4">
+      <Paper
+        elevation={6}
+        className="flex flex-col lg:flex-row rounded-2xl overflow-hidden w-full max-w-5xl shadow-2xl backdrop-blur-sm"
+      >
+        {/* Imagem lateral - só aparece em telas grandes */}
         <div className="hidden lg:flex w-1/2 bg-white items-center justify-center p-8">
           <img src={loginImage} alt="Imagem de Login" className="max-w-full max-h-full object-contain" />
         </div>
 
         {/* Formulário */}
-        <div className="flex w-full lg:w-1/2 items-start justify-start p-10 bg-white">
-          <div className="w-full max-w-md">
-
-            {/* Logo + Nome - Alinhado à esquerda */}
+        <div className="flex w-full lg:w-1/2 items-start justify-start p-6 sm:p-10 bg-white">
+          <div className="w-full max-w-md mx-auto">
+            {/* Logo + Nome */}
             <div className="flex items-center mb-4">
               <img src={logoImage} alt="Logo MILO" className="w-8 h-8 mr-2" />
               <Typography variant="h6" className="font-bold text-base">MILO</Typography>
@@ -61,8 +62,7 @@ function LoginPage() {
             {/* Espaço entre título e formulário */}
             <div className="mb-4"></div>
 
-            <form onSubmit={handleSubmit} className="w-4/5 font-sans" style={{ fontFamily: 'Roboto' }}>
-
+            <form onSubmit={handleSubmit} className="w-full font-sans" style={{ fontFamily: 'Roboto' }}>
               {/* Campo Login */}
               <Box mb={3}>
                 <Typography variant="body2" className="text-gray-600 mb-1 text-sm font-medium">
@@ -112,19 +112,19 @@ function LoginPage() {
                   label={<Typography variant="body2" className="text-gray-600 text-xs">Lembrar-me</Typography>}
                 />
                 <Link
-                href="#"
-                underline="none"
-                className="text-xs text-blue-700 hover:text-orange-500 hover:no-underline transition-colors duration-200"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate('/recuperar-senha');
-                }}
-              >
-                Esqueceu a senha?
-              </Link>
+                  href="#"
+                  underline="none"
+                  className="text-xs text-blue-700 hover:text-orange-500 hover:no-underline transition-colors duration-200"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate('/recuperar-senha');
+                  }}
+                >
+                  Esqueceu a senha?
+                </Link>
               </Box>
 
-              {/* Botão Entrar - Centralizado */}
+              {/* Botão Entrar */}
               <Box className="flex justify-center mb-4">
                 <Button
                   type="submit"
@@ -147,24 +147,23 @@ function LoginPage() {
                 </Button>
               </Box>
 
-              {/* Link Criar Conta - Centralizado */}
+              {/* Link Criar Conta */}
               <Box className="flex justify-center">
                 <Typography variant="body2" className="text-gray-600 text-sm text-center">
                   Não tem uma conta?{' '}
                   <Link
-                  href="#"
-                  underline="none"
-                  className="text-blue-700 text-sm hover:text-orange-500 hover:no-underline transition-colors duration-200"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate('/cadastro');
-                  }}
-                >
-                  Cadastre-se
-                </Link>
+                    href="#"
+                    underline="none"
+                    className="text-blue-700 text-sm hover:text-orange-500 hover:no-underline transition-colors duration-200"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/cadastro');
+                    }}
+                  >
+                    Cadastre-se
+                  </Link>
                 </Typography>
               </Box>
-
             </form>
           </div>
         </div>

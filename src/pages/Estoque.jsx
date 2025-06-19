@@ -15,23 +15,23 @@ import {
   TableHead,
   TableRow,
   Paper,
-  InputAdornment
+  InputAdornment,
+  Modal
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
 import downloadPlanilha from '../assets/images/download-planilha.png';
 
 function Estoque() {
   const [tabIndex, setTabIndex] = useState(0);
   const [activeButton, setActiveButton] = useState('cadastrar');
   const [formularios, setFormularios] = useState([{ id: 1 }]);
+  const [openModal, setOpenModal] = useState(false);
 
-  const handleTabChange = (event, newValue) => {
-    setTabIndex(newValue);
-  };
-
-  const adicionarFormulario = () => {
-    setFormularios([...formularios, { id: formularios.length + 1 }]);
-  };
+  const handleTabChange = (event, newValue) => setTabIndex(newValue);
+  const adicionarFormulario = () => setFormularios([...formularios, { id: formularios.length + 1 }]);
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
 
   const produtos = [
     { nome: 'Vinho X', tipo: 'Bebida', valor: 134, codigo: '18271821998212891', validade: '12/05/2025' },
@@ -39,7 +39,6 @@ function Estoque() {
     { nome: 'Brigadeiro da Vó', tipo: 'Doces', valor: 20, codigo: '917328378198219271', validade: '11/09/2026' },
     { nome: 'Festinha Z', tipo: 'Salgados', valor: 25, codigo: '2817318973192719921', validade: '29/08/2027' },
     { nome: 'Enlatado G', tipo: 'Enlatado', valor: 35, codigo: '1983791873913782738', validade: '25/09/2024' },
-    // Adicione mais conforme quiser
   ];
 
   const renderFormulario = (id) => (
@@ -64,14 +63,13 @@ function Estoque() {
         <TextField fullWidth size="small" placeholder="Digite o valor" />
       </Box>
 
-      <Box className="md:col-span-2 w-1/2">
+      <Box className="md:col-span-2 w-full md:w-1/2">
         <Typography variant="body2" className="mb-1 font-medium">Tipo</Typography>
         <TextField
           select
           fullWidth
           size="small"
           SelectProps={{ native: true }}
-          sx={{ minWidth: '200px' }}
         >
           <option value="">Selecione o tipo</option>
           <option value="alimento">Alimento</option>
@@ -84,12 +82,12 @@ function Estoque() {
   );
 
   return (
-    <div className="flex">
+    <div className="flex flex-row">
       <Sidebar />
 
-      <div className="flex-1 ml-0 lg:ml-64 p-8 font-sans">
+      <div className="flex-1 ml-0 lg:ml-64 p-4 sm:p-8 font-sans">
         {/* Botões Superiores */}
-        <Box className="flex space-x-4 mb-12">
+        <Box className="flex flex-col sm:flex-row sm:space-x-4 mb-12">
           <Button
             variant={activeButton === 'cadastrar' ? 'contained' : 'text'}
             sx={{
@@ -121,7 +119,7 @@ function Estoque() {
           </Button>
         </Box>
 
-        {/* Conteúdo: Cadastro de Produtos */}
+        {/* Aba Cadastrar */}
         {activeButton === 'cadastrar' && (
           <>
             <Typography variant="h4" className="font-bold mb-8 text-gray-800" sx={{ fontSize: '32px' }}>
@@ -135,6 +133,7 @@ function Estoque() {
               <Tab label="Importar Planilha" />
             </Tabs>
 
+            {/* Aba Manual */}
             {tabIndex === 0 && (
               <Box>
                 {formularios.map((form) => renderFormulario(form.id))}
@@ -172,6 +171,7 @@ function Estoque() {
               </Box>
             )}
 
+            {/* Aba Importar Planilha */}
             {tabIndex === 1 && (
               <Box className="flex flex-col items-center">
                 <img
@@ -183,7 +183,6 @@ function Estoque() {
                   Envie sua planilha para cadastrar vários produtos ao mesmo tempo!
                 </Typography>
 
-                {/* Input invisível */}
                 <input
                   type="file"
                   accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -197,7 +196,7 @@ function Estoque() {
                   }}
                 />
 
-                <Box className="flex space-x-4 mt-10">
+                <Box className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-10">
                   <Button
                     variant="contained"
                     sx={{
@@ -224,33 +223,82 @@ function Estoque() {
                         borderColor: '#F37335',
                       },
                     }}
+                    onClick={handleOpenModal}
                   >
                     Ver modelo de planilha
                   </Button>
                 </Box>
+
+                {/* Modal */}
+                <Modal
+                  open={openModal}
+                  onClose={handleCloseModal}
+                  aria-labelledby="modal-title"
+                  aria-describedby="modal-description"
+                >
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: '90%',
+                      maxWidth: 400,
+                      bgcolor: 'background.paper',
+                      boxShadow: 24,
+                      p: 4,
+                      borderRadius: 2,
+                    }}
+                  >
+                    <Box className="flex justify-between items-center mb-4">
+                      <Typography id="modal-title" variant="h6" component="h2" className="font-bold">
+                        Modelo de Planilha
+                      </Typography>
+                      <CloseIcon
+                        onClick={handleCloseModal}
+                        className="cursor-pointer"
+                        sx={{ color: '#999' }}
+                      />
+                    </Box>
+
+                    <Typography id="modal-description" sx={{ fontSize: 14, marginBottom: 2 }}>
+                      Apenas arquivos de planilha são permitidos (CSV, XLS, XLSX).
+                    </Typography>
+
+                    <Typography sx={{ fontSize: 14 }}>
+                      A planilha precisa ter obrigatoriamente as seguintes colunas:
+                    </Typography>
+
+                    <ul className="list-disc pl-5 mt-2 text-sm text-gray-700">
+                      <li>Nome</li>
+                      <li>Tipo</li>
+                      <li>Valor</li>
+                      <li>Código de Barras</li>
+                      <li>Validade</li>
+                    </ul>
+                  </Box>
+                </Modal>
               </Box>
             )}
           </>
         )}
 
-        {/* Conteúdo: Consulta de Produtos */}
+        {/* Aba Consultar */}
         {activeButton === 'consultar' && (
           <>
-          {/* Título da página de consulta */}
             <Typography variant="h4" className="font-bold mb-8 text-gray-800" sx={{ fontSize: '32px' }}>
-            Veja todos os seus produtos cadastrados!
+              Veja todos os seus produtos cadastrados!
             </Typography>
 
-            {/* Espaçamento entre título e filtro */}
             <div className="mb-8"></div>
 
-            <Box className="flex space-x-4 mb-6">
+            <Box className="flex flex-col md:flex-row md:space-x-4 mb-6">
               <TextField
                 select
                 size="small"
                 label="Filtrar"
                 defaultValue=""
-                sx={{ minWidth: 120 }}
+                sx={{ minWidth: 120, marginBottom: { xs: 2, md: 0 } }}
               >
                 <MenuItem value="">Todos</MenuItem>
                 <MenuItem value="Bebida">Bebida</MenuItem>
