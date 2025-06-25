@@ -15,16 +15,31 @@ import {
   TableHead,
   TableRow,
   Paper,
-  InputAdornment
+  InputAdornment,
+  Modal
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 function PaginaInicial() {
   const [tabIndex, setTabIndex] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [detalhesSelecionados, setDetalhesSelecionados] = useState('');
 
-  const handleTabChange = (event, newValue) => {
-    setTabIndex(newValue);
+  const handleTabChange = (event, newValue) => setTabIndex(newValue);
+
+  const abrirModal = (tipo) => {
+    let detalhes = '';
+    if (tipo === 'Cadastro de Produto') {
+      detalhes = 'Quantidade de produtos cadastrados: 20\nMarca: XYZ\nCategoria: Alimentos';
+    } else if (tipo === 'Edição de Rota') {
+      detalhes = 'Motorista alterado para: João Santos\nNovo tempo previsto: 2h 30min';
+    } else if (tipo === 'Cadastro de Cliente') {
+      detalhes = 'Cliente: Supermercado Bom Preço\nEndereço: Rua das Flores, 123';
+    }
+    setDetalhesSelecionados(detalhes);
+    setModalOpen(true);
   };
 
   const historico = [
@@ -74,9 +89,7 @@ function PaginaInicial() {
                 backgroundColor: '#25AABF',
                 textTransform: 'none',
                 marginBottom: 4,
-                '&:hover': {
-                  backgroundColor: '#F37335',
-                },
+                '&:hover': { backgroundColor: '#F37335' },
               }}
             >
               Gerar Relatórios
@@ -142,14 +155,15 @@ function PaginaInicial() {
               <TextField
                 select
                 size="small"
-                label="Filtrar por"
+                label="Ordenar por"
                 defaultValue=""
-                sx={{ minWidth: 150 }}
+                sx={{ minWidth: 180 }}
               >
-                <MenuItem value="">Todos</MenuItem>
-                <MenuItem value="Cadastro de Produto">Cadastro de Produto</MenuItem>
-                <MenuItem value="Edição de Rota">Edição de Rota</MenuItem>
-                <MenuItem value="Cadastro de Cliente">Cadastro de Cliente</MenuItem>
+                <MenuItem value="">Padrão</MenuItem>
+                <MenuItem value="data-recente">Data - Mais recente</MenuItem>
+                <MenuItem value="data-antiga">Data - Mais antiga</MenuItem>
+                <MenuItem value="hora-recente">Horário - Mais recente</MenuItem>
+                <MenuItem value="hora-antiga">Horário - Mais antigo</MenuItem>
               </TextField>
 
               <TextField
@@ -175,6 +189,7 @@ function PaginaInicial() {
                     <TableCell><strong>Tipo</strong></TableCell>
                     <TableCell><strong>Horário</strong></TableCell>
                     <TableCell><strong>Data</strong></TableCell>
+                    <TableCell><strong>Ver Detalhes</strong></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -184,11 +199,67 @@ function PaginaInicial() {
                       <TableCell>{item.tipo}</TableCell>
                       <TableCell>{item.horario}</TableCell>
                       <TableCell>{item.data}</TableCell>
+                      <TableCell>
+                        <Button
+                          size="small"
+                          onClick={() => abrirModal(item.tipo)}
+                          sx={{
+                            minWidth: '32px',
+                            padding: '4px',
+                            color: '#004B8D',
+                            '&:hover': { color: '#F37335' },
+                          }}
+                        >
+                          <VisibilityIcon fontSize="small" />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </TableContainer>
+
+            {/* Modal Detalhes */}
+            <Modal
+              open={modalOpen}
+              onClose={() => setModalOpen(false)}
+              aria-labelledby="modal-detalhes-titulo"
+              aria-describedby="modal-detalhes-descricao"
+            >
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: 400,
+                  bgcolor: 'background.paper',
+                  borderRadius: 2,
+                  boxShadow: 24,
+                  p: 4,
+                }}
+              >
+                <Typography id="modal-detalhes-titulo" variant="h6" className="mb-4 font-bold">
+                  Detalhes da Movimentação
+                </Typography>
+                <Typography id="modal-detalhes-descricao" variant="body2" sx={{ whiteSpace: 'pre-line' }}>
+                  {detalhesSelecionados}
+                </Typography>
+                <Box className="flex justify-end mt-4">
+                  <Button
+                    onClick={() => setModalOpen(false)}
+                    sx={{
+                      textTransform: 'none',
+                      backgroundColor: '#004B8D',
+                      color: 'white',
+                      '&:hover': { backgroundColor: '#F37335' },
+                    }}
+                  >
+                    Fechar
+                  </Button>
+                </Box>
+              </Box>
+            </Modal>
           </>
         )}
       </div>

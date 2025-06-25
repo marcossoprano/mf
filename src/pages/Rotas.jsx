@@ -27,6 +27,7 @@ function Rotas() {
   const [destinosSugestao, setDestinosSugestao] = useState(['']);
 
   const handleTabChange = (event, newValue) => setTabIndex(newValue);
+
   const adicionarFormulario = () => setFormularios([...formularios, { id: formularios.length + 1 }]);
 
   const adicionarDestinoCadastro = () => setDestinosCadastro([...destinosCadastro, '']);
@@ -60,7 +61,7 @@ function Rotas() {
         <TextField fullWidth size="small" placeholder="Ex: Mercadinho do José" />
       </Box>
 
-      {/* Destinos Dinâmicos - Aba Cadastro */}
+      {/* Destinos Dinâmicos - Cadastro Manual */}
       <Box className="md:col-span-2">
         <Typography variant="body2" className="mb-1 font-medium">Destinos</Typography>
         {destinosCadastro.map((dest, index) => (
@@ -130,47 +131,13 @@ function Rotas() {
 
         {/* Tabs */}
         <Tabs value={tabIndex} onChange={handleTabChange} textColor="primary" indicatorColor="primary" className="mb-6">
-          <Tab label="Cadastrar Nova Rota" />
-          <Tab label="Gerar Sugestões de Rotas" />
+          <Tab label="Gerar rota automaticamente" />
+          <Tab label="Cadastrar rota manualmente" />
           <Tab label="Consultar Rotas" />
         </Tabs>
 
-        {/* Aba 1 - Cadastrar Nova Rota */}
+        {/* Aba 0 - Gerar rota automaticamente */}
         {tabIndex === 0 && (
-          <Box>
-            {formularios.map((form) => renderFormularioCadastro(form.id))}
-
-            <Box className="flex items-center mb-6">
-              <Button
-                variant="outlined"
-                startIcon={<span>＋</span>}
-                onClick={adicionarFormulario}
-                sx={{
-                  textTransform: 'none',
-                  borderColor: '#c2c2c2',
-                  color: '#4B4B4B',
-                  '&:hover': { backgroundColor: '#f0f0f0' },
-                }}
-              >
-                Adicione mais uma rota
-              </Button>
-            </Box>
-
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: '#25AABF',
-                textTransform: 'none',
-                '&:hover': { backgroundColor: '#1e90a3' },
-              }}
-            >
-              Cadastrar
-            </Button>
-          </Box>
-        )}
-
-        {/* Aba 2 - Gerar Sugestões de Rotas */}
-        {tabIndex === 1 && (
           <Box className="flex flex-col items-center mt-8">
             <img src={rotaImage} alt="Imagem Rota" className="mb-8 max-w-xs" />
 
@@ -185,7 +152,7 @@ function Rotas() {
                 <TextField fullWidth size="small" placeholder="Digite o nome do motorista" />
               </Box>
 
-              {/* Destinos Dinâmicos - Aba Sugestões */}
+              {/* Destinos Dinâmicos - Sugestão */}
               <Box className="md:col-span-2">
                 <Typography variant="body2" className="mb-1 font-medium">Destinos</Typography>
                 {destinosSugestao.map((dest, index) => (
@@ -229,7 +196,41 @@ function Rotas() {
           </Box>
         )}
 
-        {/* Aba 3 - Consultar Rotas */}
+        {/* Aba 1 - Cadastrar rota manualmente */}
+        {tabIndex === 1 && (
+          <Box>
+            {formularios.map((form) => renderFormularioCadastro(form.id))}
+
+            <Box className="flex items-center mb-6">
+              <Button
+                variant="outlined"
+                startIcon={<span>＋</span>}
+                onClick={adicionarFormulario}
+                sx={{
+                  textTransform: 'none',
+                  borderColor: '#c2c2c2',
+                  color: '#4B4B4B',
+                  '&:hover': { backgroundColor: '#f0f0f0' },
+                }}
+              >
+                Adicione mais uma rota
+              </Button>
+            </Box>
+
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: '#25AABF',
+                textTransform: 'none',
+                '&:hover': { backgroundColor: '#1e90a3' },
+              }}
+            >
+              Cadastrar
+            </Button>
+          </Box>
+        )}
+
+        {/* Aba 2 - Consultar Rotas */}
         {tabIndex === 2 && (
           <>
             <Typography variant="h4" className="font-bold mb-8 text-gray-800" sx={{ fontSize: '32px' }}>
@@ -238,6 +239,7 @@ function Rotas() {
 
             <div className="mb-8"></div>
 
+            {/* Filtro + Pesquisa */}
             <Box className="flex space-x-4 mb-6">
               <TextField
                 select
@@ -275,17 +277,17 @@ function Rotas() {
                     <TableCell><strong>Gasto – Combustível</strong></TableCell>
                     <TableCell><strong>Tempo</strong></TableCell>
                     <TableCell><strong>Data</strong></TableCell>
-                    <TableCell><strong>Status</strong></TableCell>
+                    <TableCell><strong>Copiar Link</strong></TableCell>
                     <TableCell><strong>Número de Clientes</strong></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {[
-                    { id: '123243', motorista: 'João Santos', gasto: 30, tempo: '2h', data: '12/05/2025', status: 'Concluída', clientes: 3 },
-                    { id: '1212434', motorista: 'André Oliveira', gasto: 12, tempo: '30min', data: '12/08/2025', status: 'A começar', clientes: 1 },
-                    { id: '1298912', motorista: 'Manoel Ferreira', gasto: 20, tempo: '1h', data: '11/09/2026', status: 'Concluída', clientes: 2 },
-                    { id: '242385', motorista: 'José Antonio', gasto: 25, tempo: '55min', data: '29/08/2027', status: 'Concluída', clientes: 4 },
-                    { id: '1387284', motorista: 'André Ferreira', gasto: 35, tempo: '25min', data: '25/09/2024', status: 'A começar', clientes: 2 },
+                    { id: '123243', motorista: 'João Santos', gasto: 30, tempo: '2h', data: '12/05/2025', clientes: 3 },
+                    { id: '1212434', motorista: 'André Oliveira', gasto: 12, tempo: '30min', data: '12/08/2025', clientes: 1 },
+                    { id: '1298912', motorista: 'Manoel Ferreira', gasto: 20, tempo: '1h', data: '11/09/2026', clientes: 2 },
+                    { id: '242385', motorista: 'José Antonio', gasto: 25, tempo: '55min', data: '29/08/2027', clientes: 4 },
+                    { id: '1387284', motorista: 'André Ferreira', gasto: 35, tempo: '25min', data: '25/09/2024', clientes: 2 },
                   ].map((rota, index) => (
                     <TableRow key={rota.id} sx={{ backgroundColor: index % 2 === 0 ? '#f0f8ff' : 'white' }}>
                       <TableCell>{rota.id}</TableCell>
@@ -293,7 +295,25 @@ function Rotas() {
                       <TableCell>{rota.gasto}</TableCell>
                       <TableCell>{rota.tempo}</TableCell>
                       <TableCell>{rota.data}</TableCell>
-                      <TableCell>{rota.status}</TableCell>
+                      <TableCell>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          sx={{
+                            textTransform: 'none',
+                            color: '#004B8D',
+                            borderColor: '#004B8D',
+                            '&:hover': {
+                              backgroundColor: '#F37335',
+                              color: 'white',
+                              borderColor: '#F37335',
+                            },
+                          }}
+                          onClick={() => navigator.clipboard.writeText('iajdaijdajau')}
+                        >
+                          Copiar
+                        </Button>
+                      </TableCell>
                       <TableCell>{rota.clientes}</TableCell>
                     </TableRow>
                   ))}

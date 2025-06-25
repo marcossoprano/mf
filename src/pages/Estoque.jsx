@@ -19,29 +19,42 @@ import {
   Modal
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import CloseIcon from '@mui/icons-material/Close';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
 import downloadPlanilha from '../assets/images/download-planilha.png';
 
 function Estoque() {
   const [tabIndex, setTabIndex] = useState(0);
   const [activeButton, setActiveButton] = useState('cadastrar');
   const [formularios, setFormularios] = useState([{ id: 1 }]);
-  const [openModal, setOpenModal] = useState(false);
+  const [produtos, setProdutos] = useState([
+    {
+      nome: 'Vinho X',
+      tipo: 'Bebida',
+      quantidade: 10,
+      lote: 'L123',
+      precoCusto: 100,
+      precoVenda: 134,
+      marca: 'Marca A',
+      validade: '12/05/2025',
+    },
+    // Adicione mais exemplos se quiser
+  ]);
+  const [mostrarOutroTipo, setMostrarOutroTipo] = useState(false);
+  const [modalDetalhesOpen, setModalDetalhesOpen] = useState(false);
+  const [produtoSelecionado, setProdutoSelecionado] = useState(null);
 
   const handleTabChange = (event, newValue) => setTabIndex(newValue);
+
   const adicionarFormulario = () => setFormularios([...formularios, { id: formularios.length + 1 }]);
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
 
-  const produtos = [
-    { nome: 'Vinho X', tipo: 'Bebida', valor: 134, codigo: '18271821998212891', validade: '12/05/2025' },
-    { nome: 'Vegetal Y', tipo: 'Vegetais', valor: 12, codigo: '29103189731289719', validade: '10/09/2025' },
-    { nome: 'Brigadeiro da Vó', tipo: 'Doces', valor: 20, codigo: '917328378198219271', validade: '11/09/2026' },
-    { nome: 'Festinha Z', tipo: 'Salgados', valor: 25, codigo: '2817318973192719921', validade: '29/08/2027' },
-    { nome: 'Enlatado G', tipo: 'Enlatado', valor: 35, codigo: '1983791873913782738', validade: '25/09/2024' },
-  ];
+  const abrirModalDetalhes = (produto) => {
+    setProdutoSelecionado(produto);
+    setModalDetalhesOpen(true);
+  };
 
-  const renderFormulario = (id) => (
+  const fecharModalDetalhes = () => setModalDetalhesOpen(false);
+    const renderFormulario = (id) => (
     <Box key={id} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
       <Box>
         <Typography variant="body2" className="mb-1 font-medium">Nome</Typography>
@@ -49,54 +62,73 @@ function Estoque() {
       </Box>
 
       <Box>
-        <Typography variant="body2" className="mb-1 font-medium">Validade</Typography>
-        <TextField fullWidth size="small" placeholder="Digite a validade" />
+        <Typography variant="body2" className="mb-1 font-medium">Quantidade</Typography>
+        <TextField fullWidth size="small" placeholder="Digite a quantidade" />
       </Box>
 
       <Box>
-        <Typography variant="body2" className="mb-1 font-medium">Código de Barras</Typography>
-        <TextField fullWidth size="small" placeholder="Digite o código de barras" />
+        <Typography variant="body2" className="mb-1 font-medium">Lote</Typography>
+        <TextField fullWidth size="small" placeholder="Digite o lote" />
       </Box>
 
       <Box>
-        <Typography variant="body2" className="mb-1 font-medium">Valor</Typography>
-        <TextField fullWidth size="small" placeholder="Digite o valor" />
+        <Typography variant="body2" className="mb-1 font-medium">Preço de Custo</Typography>
+        <TextField fullWidth size="small" placeholder="Digite o preço de custo" />
       </Box>
 
-      <Box className="md:col-span-2 w-full md:w-1/2">
+      <Box>
+        <Typography variant="body2" className="mb-1 font-medium">Preço de Venda</Typography>
+        <TextField fullWidth size="small" placeholder="Digite o preço de venda" />
+      </Box>
+
+      <Box>
+        <Typography variant="body2" className="mb-1 font-medium">Marca</Typography>
+        <TextField fullWidth size="small" placeholder="Digite a marca" />
+      </Box>
+
+      <Box className="md:col-span-2 w-1/2">
         <Typography variant="body2" className="mb-1 font-medium">Tipo</Typography>
         <TextField
           select
           fullWidth
           size="small"
+          onChange={(e) => setMostrarOutroTipo(e.target.value === 'Outro')}
           SelectProps={{ native: true }}
+          sx={{ minWidth: '200px' }}
         >
           <option value="">Selecione o tipo</option>
           <option value="alimento">Alimento</option>
           <option value="bebida">Bebida</option>
           <option value="limpeza">Limpeza</option>
           <option value="higiene">Higiene</option>
+          <option value="Outro">Outro</option>
         </TextField>
+        {mostrarOutroTipo && (
+          <TextField
+            fullWidth
+            size="small"
+            placeholder="Digite a nova categoria"
+            className="mt-2"
+          />
+        )}
       </Box>
     </Box>
   );
 
   return (
-    <div className="flex flex-row">
+    <div className="flex">
       <Sidebar />
 
-      <div className="flex-1 ml-0 lg:ml-64 p-4 sm:p-8 font-sans">
+      <div className="flex-1 ml-0 lg:ml-64 p-8 font-sans">
         {/* Botões Superiores */}
-        <Box className="flex flex-col sm:flex-row sm:space-x-4 mb-12">
+        <Box className="flex space-x-4 mb-12">
           <Button
             variant={activeButton === 'cadastrar' ? 'contained' : 'text'}
             sx={{
               backgroundColor: activeButton === 'cadastrar' ? '#4BA9F7' : 'transparent',
               color: activeButton === 'cadastrar' ? 'white' : '#4BA9F7',
               textTransform: 'none',
-              '&:hover': {
-                backgroundColor: activeButton === 'cadastrar' ? '#3590d8' : '#e3f2fd',
-              },
+              '&:hover': { backgroundColor: activeButton === 'cadastrar' ? '#3590d8' : '#e3f2fd' },
             }}
             onClick={() => setActiveButton('cadastrar')}
           >
@@ -109,17 +141,14 @@ function Estoque() {
               backgroundColor: activeButton === 'consultar' ? '#4BA9F7' : 'transparent',
               color: activeButton === 'consultar' ? 'white' : '#4BA9F7',
               textTransform: 'none',
-              '&:hover': {
-                backgroundColor: activeButton === 'consultar' ? '#3590d8' : '#e3f2fd',
-              },
+              '&:hover': { backgroundColor: activeButton === 'consultar' ? '#3590d8' : '#e3f2fd' },
             }}
             onClick={() => setActiveButton('consultar')}
           >
             Consultar Produtos
           </Button>
         </Box>
-
-        {/* Aba Cadastrar */}
+          {/* Aba: Cadastro de Produtos */}
         {activeButton === 'cadastrar' && (
           <>
             <Typography variant="h4" className="font-bold mb-8 text-gray-800" sx={{ fontSize: '32px' }}>
@@ -147,9 +176,7 @@ function Estoque() {
                       textTransform: 'none',
                       borderColor: '#c2c2c2',
                       color: '#4B4B4B',
-                      '&:hover': {
-                        backgroundColor: '#f0f0f0',
-                      },
+                      '&:hover': { backgroundColor: '#f0f0f0' },
                     }}
                   >
                     Adicione mais um produto
@@ -161,9 +188,7 @@ function Estoque() {
                   sx={{
                     backgroundColor: '#25AABF',
                     textTransform: 'none',
-                    '&:hover': {
-                      backgroundColor: '#1e90a3',
-                    },
+                    '&:hover': { backgroundColor: '#1e90a3' },
                   }}
                 >
                   Cadastrar
@@ -196,15 +221,13 @@ function Estoque() {
                   }}
                 />
 
-                <Box className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-10">
+                <Box className="flex space-x-4 mt-10">
                   <Button
                     variant="contained"
                     sx={{
                       backgroundColor: '#004B8D',
                       textTransform: 'none',
-                      '&:hover': {
-                        backgroundColor: '#F37335',
-                      },
+                      '&:hover': { backgroundColor: '#F37335' },
                     }}
                     onClick={() => document.getElementById('file-upload').click()}
                   >
@@ -223,67 +246,15 @@ function Estoque() {
                         borderColor: '#F37335',
                       },
                     }}
-                    onClick={handleOpenModal}
                   >
                     Ver modelo de planilha
                   </Button>
                 </Box>
-
-                {/* Modal */}
-                <Modal
-                  open={openModal}
-                  onClose={handleCloseModal}
-                  aria-labelledby="modal-title"
-                  aria-describedby="modal-description"
-                >
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      width: '90%',
-                      maxWidth: 400,
-                      bgcolor: 'background.paper',
-                      boxShadow: 24,
-                      p: 4,
-                      borderRadius: 2,
-                    }}
-                  >
-                    <Box className="flex justify-between items-center mb-4">
-                      <Typography id="modal-title" variant="h6" component="h2" className="font-bold">
-                        Modelo de Planilha
-                      </Typography>
-                      <CloseIcon
-                        onClick={handleCloseModal}
-                        className="cursor-pointer"
-                        sx={{ color: '#999' }}
-                      />
-                    </Box>
-
-                    <Typography id="modal-description" sx={{ fontSize: 14, marginBottom: 2 }}>
-                      Apenas arquivos de planilha são permitidos (CSV, XLS, XLSX).
-                    </Typography>
-
-                    <Typography sx={{ fontSize: 14 }}>
-                      A planilha precisa ter obrigatoriamente as seguintes colunas:
-                    </Typography>
-
-                    <ul className="list-disc pl-5 mt-2 text-sm text-gray-700">
-                      <li>Nome</li>
-                      <li>Tipo</li>
-                      <li>Valor</li>
-                      <li>Código de Barras</li>
-                      <li>Validade</li>
-                    </ul>
-                  </Box>
-                </Modal>
               </Box>
             )}
           </>
         )}
-
-        {/* Aba Consultar */}
+        {/* Aba: Consulta de Produtos */}
         {activeButton === 'consultar' && (
           <>
             <Typography variant="h4" className="font-bold mb-8 text-gray-800" sx={{ fontSize: '32px' }}>
@@ -292,23 +263,32 @@ function Estoque() {
 
             <div className="mb-8"></div>
 
-            <Box className="flex flex-col md:flex-row md:space-x-4 mb-6">
+            {/* Filtros */}
+            <Box className="flex space-x-4 mb-6">
               <TextField
                 select
                 size="small"
-                label="Filtrar"
+                label="Tipo"
                 defaultValue=""
-                sx={{ minWidth: 120, marginBottom: { xs: 2, md: 0 } }}
+                sx={{ minWidth: 120 }}
               >
                 <MenuItem value="">Todos</MenuItem>
+                <MenuItem value="Alimento">Alimento</MenuItem>
                 <MenuItem value="Bebida">Bebida</MenuItem>
-                <MenuItem value="Vegetais">Vegetais</MenuItem>
-                <MenuItem value="Doces">Doces</MenuItem>
+                <MenuItem value="Limpeza">Limpeza</MenuItem>
+                <MenuItem value="Higiene">Higiene</MenuItem>
               </TextField>
 
               <TextField
+                type="date"
                 size="small"
-                placeholder="Digite o nome ou tipo de produto que você quer acessar..."
+                label="Data de Validade"
+                InputLabelProps={{ shrink: true }}
+              />
+
+              <TextField
+                size="small"
+                placeholder="Buscar por nome ou tipo..."
                 fullWidth
                 InputProps={{
                   startAdornment: (
@@ -320,15 +300,20 @@ function Estoque() {
               />
             </Box>
 
+            {/* Tabela */}
             <TableContainer component={Paper}>
               <Table>
                 <TableHead>
                   <TableRow>
                     <TableCell><strong>Nome</strong></TableCell>
                     <TableCell><strong>Tipo</strong></TableCell>
-                    <TableCell><strong>Valor</strong></TableCell>
-                    <TableCell><strong>Código de Barras</strong></TableCell>
-                    <TableCell><strong>Validade</strong></TableCell>
+                    <TableCell><strong>Quantidade</strong></TableCell>
+                    <TableCell><strong>Lote</strong></TableCell>
+                    <TableCell><strong>Preço de Custo</strong></TableCell>
+                    <TableCell><strong>Preço de Venda</strong></TableCell>
+                    <TableCell><strong>Marca</strong></TableCell>
+                    <TableCell><strong>Ver Detalhes</strong></TableCell>
+                    <TableCell><strong>Editar</strong></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -336,14 +321,93 @@ function Estoque() {
                     <TableRow key={index} sx={{ backgroundColor: index % 2 === 0 ? '#f0f8ff' : 'white' }}>
                       <TableCell>{produto.nome}</TableCell>
                       <TableCell>{produto.tipo}</TableCell>
-                      <TableCell>{produto.valor}</TableCell>
-                      <TableCell>{produto.codigo}</TableCell>
-                      <TableCell>{produto.validade}</TableCell>
+                      <TableCell>{produto.quantidade}</TableCell>
+                      <TableCell>{produto.lote}</TableCell>
+                      <TableCell>{produto.precoCusto}</TableCell>
+                      <TableCell>{produto.precoVenda}</TableCell>
+                      <TableCell>{produto.marca}</TableCell>
+                      <TableCell>
+                        <Button
+                          size="small"
+                          onClick={() => abrirModalDetalhes(produto)}
+                          sx={{
+                            minWidth: '32px',
+                            padding: '4px',
+                            color: '#004B8D',
+                            '&:hover': { color: '#F37335' },
+                          }}
+                        >
+                          <VisibilityIcon fontSize="small" />
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          size="small"
+                          sx={{
+                            minWidth: '32px',
+                            padding: '4px',
+                            color: '#004B8D',
+                            '&:hover': { color: '#F37335' },
+                          }}
+                        >
+                          <EditIcon fontSize="small" />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </TableContainer>
+
+            {/* Modal Detalhes */}
+            <Modal
+              open={modalDetalhesOpen}
+              onClose={fecharModalDetalhes}
+              aria-labelledby="modal-detalhes-titulo"
+              aria-describedby="modal-detalhes-descricao"
+            >
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: 400,
+                  bgcolor: 'background.paper',
+                  borderRadius: 2,
+                  boxShadow: 24,
+                  p: 4,
+                }}
+              >
+                <Typography id="modal-detalhes-titulo" variant="h6" className="mb-4 font-bold">
+                  Detalhes do Produto
+                </Typography>
+                {produtoSelecionado && (
+                  <Typography id="modal-detalhes-descricao" variant="body2" sx={{ whiteSpace: 'pre-line' }}>
+                    Nome: {produtoSelecionado.nome}
+                    {'\n'}Tipo: {produtoSelecionado.tipo}
+                    {'\n'}Quantidade: {produtoSelecionado.quantidade}
+                    {'\n'}Lote: {produtoSelecionado.lote}
+                    {'\n'}Preço de Custo: {produtoSelecionado.precoCusto}
+                    {'\n'}Preço de Venda: {produtoSelecionado.precoVenda}
+                    {'\n'}Marca: {produtoSelecionado.marca}
+                  </Typography>
+                )}
+                <Box className="flex justify-end mt-4">
+                  <Button
+                    onClick={fecharModalDetalhes}
+                    sx={{
+                      textTransform: 'none',
+                      backgroundColor: '#004B8D',
+                      color: 'white',
+                      '&:hover': { backgroundColor: '#F37335' },
+                    }}
+                  >
+                    Fechar
+                  </Button>
+                </Box>
+              </Box>
+            </Modal>
           </>
         )}
       </div>

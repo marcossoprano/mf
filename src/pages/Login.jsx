@@ -37,7 +37,7 @@ function LoginPage() {
         elevation={6}
         className="flex flex-col lg:flex-row rounded-2xl overflow-hidden w-full max-w-5xl shadow-2xl backdrop-blur-sm"
       >
-        {/* Imagem lateral - só aparece em telas grandes */}
+        {/* Imagem lateral */}
         <div className="hidden lg:flex w-1/2 bg-white items-center justify-center p-8">
           <img src={loginImage} alt="Imagem de Login" className="max-w-full max-h-full object-contain" />
         </div>
@@ -147,7 +147,7 @@ function LoginPage() {
                 </Button>
               </Box>
 
-              {/* Link Criar Conta */}
+              {/* Criar Conta */}
               <Box className="flex justify-center">
                 <Typography variant="body2" className="text-gray-600 text-sm text-center">
                   Não tem uma conta?{' '}
