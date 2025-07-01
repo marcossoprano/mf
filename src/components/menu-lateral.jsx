@@ -15,7 +15,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import MapIcon from '@mui/icons-material/Map';
-import PersonIcon from '@mui/icons-material/Person';
+import AssessmentIcon from '@mui/icons-material/Assessment'; // Novo ícone para relatórios
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -32,7 +32,7 @@ function Sidebar() {
     { text: 'Início', icon: <HomeIcon />, path: '/pagina-inicial' },
     { text: 'Estoque', icon: <InventoryIcon />, path: '/estoque' },
     { text: 'Rotas', icon: <MapIcon />, path: '/rotas' },
-    { text: 'Perfil', icon: <PersonIcon />, path: '/perfil' },
+    { text: 'Relatórios', icon: <AssessmentIcon />, path: '/relatorio' }, // substitui o antigo Perfil
     { text: 'Configurações', icon: <SettingsIcon />, path: '/configuracoes' },
     { text: 'Sair', icon: <LogoutIcon />, path: '/sair' },
   ];
@@ -40,7 +40,10 @@ function Sidebar() {
   const drawerContent = (
     <div className="flex flex-col h-full bg-blue-900 text-white">
       {/* Perfil */}
-      <div className="flex flex-col items-center py-6">
+      <div
+        className="flex flex-col items-center py-6 cursor-pointer"
+        onClick={() => navigate('/perfil')}
+      >
         <Avatar
           src="/caminho/para/imagem-do-perfil.jpg"
           alt="Perfil"
@@ -65,9 +68,7 @@ function Sidebar() {
                 ${isActive ? 'bg-blue-400' : 'hover:bg-blue-400'}
               `}
               sx={{
-                '& .MuiListItemIcon-root': {
-                  color: 'white',
-                },
+                '& .MuiListItemIcon-root': { color: 'white' },
               }}
             >
               <ListItemIcon className="text-white">{item.icon}</ListItemIcon>
@@ -102,12 +103,8 @@ function Sidebar() {
         variant="temporary"
         open={mobileOpen}
         onClose={handleDrawerToggle}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        classes={{
-          paper: 'w-64 bg-blue-900 text-white',
-        }}
+        ModalProps={{ keepMounted: true }}
+        classes={{ paper: 'w-64 bg-blue-900 text-white' }}
       >
         {drawerContent}
       </Drawer>

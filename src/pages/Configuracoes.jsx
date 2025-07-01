@@ -7,14 +7,7 @@ import {
   Tab,
   Typography,
   TextField,
-  MenuItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper
+  MenuItem
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import senhaImage from '../assets/images/MUDAR-SENHA.png';
@@ -26,7 +19,6 @@ function Configuracoes() {
   const [senhaAtual, setSenhaAtual] = useState('');
   const [novaSenha, setNovaSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
-  const [frequenciaRelatorio, setFrequenciaRelatorio] = useState('');
   const [metodoNotificacao, setMetodoNotificacao] = useState('');
   const [estoqueMinimo, setEstoqueMinimo] = useState('');
   const navigate = useNavigate();
@@ -70,7 +62,6 @@ function Configuracoes() {
           <Box>
             <Tabs value={subTab} onChange={handleSubTabChange} className="mb-8">
               <Tab label="Notificações" />
-              <Tab label="Relatórios" />
               <Tab label="Limite de Estoque" />
             </Tabs>
 
@@ -92,62 +83,8 @@ function Configuracoes() {
               </Box>
             )}
 
-            {/* SubAba Relatórios */}
-            {subTab === 1 && (
-              <Box>
-                <Typography variant="body2" className="mb-8 font-bold">Frequência dos Relatórios</Typography>
-                <TextField
-                  select
-                  fullWidth
-                  size="small"
-                  value={frequenciaRelatorio}
-                  onChange={(e) => setFrequenciaRelatorio(e.target.value)}
-                >
-                  <MenuItem value="semanal">Semanal</MenuItem>
-                  <MenuItem value="quinzenal">Quinzenal</MenuItem>
-                  <MenuItem value="mensal">Mensal</MenuItem>
-                  <MenuItem value="nenhum">Não desejo receber relatórios</MenuItem>
-                </TextField>
-
-                <Typography variant="body2" className="mt-24 mb-2 font-bold">Histórico de Relatórios</Typography>
-                <TableContainer component={Paper}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>ID</TableCell>
-                        <TableCell>Baixar Relatório</TableCell>
-                        <TableCell>Data de Produção</TableCell>
-                        <TableCell>Período</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {[1, 2, 3].map((id) => (
-                        <TableRow key={id}>
-                          <TableCell>{id}</TableCell>
-                          <TableCell>
-                            <Button
-                              variant="contained"
-                              sx={{
-                                backgroundColor: '#004B8D',
-                                '&:hover': { backgroundColor: '#F37335' },
-                                textTransform: 'none'
-                              }}
-                            >
-                              Download
-                            </Button>
-                          </TableCell>
-                          <TableCell>01/06/2025</TableCell>
-                          <TableCell>Mensal</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Box>
-            )}
-
             {/* SubAba Estoque */}
-            {subTab === 2 && (
+            {subTab === 1 && (
               <Box>
                 <Typography variant="body2" className="mb-2 font-bold">Estoque Mínimo Geral</Typography>
                 <TextField

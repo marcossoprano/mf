@@ -8,6 +8,7 @@ import Estoque from './pages/Estoque';
 import Rotas from './pages/Rotas';
 import Perfil from './pages/Perfil';
 import Configuracoes from './pages/Configuracoes';
+import Relatorio from './pages/relatorio';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/rotas" element={<Rotas />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/configuracoes" element={<Configuracoes />} />
+        <Route path="/relatorio" element={<Relatorio />} />
       </Routes>
     </Router>
   );
