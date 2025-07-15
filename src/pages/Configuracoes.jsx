@@ -7,7 +7,8 @@ import {
   Tab,
   Typography,
   TextField,
-  MenuItem
+  MenuItem,
+  useMediaQuery
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import senhaImage from '../assets/images/MUDAR-SENHA.png';
@@ -21,14 +22,16 @@ function Configuracoes() {
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [metodoNotificacao, setMetodoNotificacao] = useState('');
   const [estoqueMinimo, setEstoqueMinimo] = useState('');
+  const [produtoSelecionado, setProdutoSelecionado] = useState('');
   const navigate = useNavigate();
+  const isMobile = useMediaQuery('(max-width:768px)');
 
-  const handleTabChange = (event, newValue) => setTabIndex(newValue);
-  const handleSubTabChange = (event, newValue) => setSubTab(newValue);
+  const handleTabChange = (e, newValue) => setTabIndex(newValue);
+  const handleSubTabChange = (e, newValue) => setSubTab(newValue);
 
   const handleSalvarSenha = () => {
     if (novaSenha === confirmarSenha) {
-      console.log('Senha alterada com sucesso!');
+      alert('Senha alterada com sucesso!');
       setSenhaAtual('');
       setNovaSenha('');
       setConfirmarSenha('');
@@ -38,19 +41,30 @@ function Configuracoes() {
   };
 
   const handleDeletarConta = () => {
-    console.log('Conta deletada!');
     navigate('/');
   };
 
+  const handleSalvarEstoque = () => {
+    alert('Informações salvas com sucesso!');
+  };
+
   return (
-    <div className="flex bg-white min-h-screen">
+    <div className="flex">
       <Sidebar />
-      <div className="flex-1 ml-0 lg:ml-64 p-8 font-sans">
-        <Typography variant="h4" className="font-bold text-gray-800 mb-16" sx={{ fontSize: '32px' }}>
+
+      <div className="flex-1 ml-0 lg:ml-64 p-6 sm:p-8 font-sans bg-white min-h-screen w-full">
+        <Typography variant="h4" sx={{ fontSize: '32px', fontWeight: 'bold', color: '#333', mb: 8 }}>
           Configurações da Conta
         </Typography>
 
-        <Tabs value={tabIndex} onChange={handleTabChange} textColor="primary" indicatorColor="primary" className="mb-8">
+        <Tabs
+          value={tabIndex}
+          onChange={handleTabChange}
+          textColor="primary"
+          indicatorColor="primary"
+          sx={{ mb: 6 }}
+          variant={isMobile ? 'scrollable' : 'standard'}
+        >
           <Tab label="Informações" />
           <Tab label="Mudar Senha" />
           <Tab label="Deletar Conta" />
@@ -60,7 +74,12 @@ function Configuracoes() {
         {/* Aba Informações */}
         {tabIndex === 0 && (
           <Box>
-            <Tabs value={subTab} onChange={handleSubTabChange} className="mb-8">
+            <Tabs
+              value={subTab}
+              onChange={handleSubTabChange}
+              sx={{ mb: 6 }}
+              variant={isMobile ? 'scrollable' : 'standard'}
+            >
               <Tab label="Notificações" />
               <Tab label="Limite de Estoque" />
             </Tabs>
@@ -68,7 +87,9 @@ function Configuracoes() {
             {/* SubAba Notificações */}
             {subTab === 0 && (
               <Box>
-                <Typography variant="body2" className="mb-2 font-bold">Método de Notificação</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 2 }}>
+                  Método de Notificação
+                </Typography>
                 <TextField
                   select
                   fullWidth
@@ -86,15 +107,48 @@ function Configuracoes() {
             {/* SubAba Estoque */}
             {subTab === 1 && (
               <Box>
-                <Typography variant="body2" className="mb-2 font-bold">Estoque Mínimo Geral</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 2 }}>
+                  Escolha o produto
+                </Typography>
+                <TextField
+                  select
+                  fullWidth
+                  size="small"
+                  value={produtoSelecionado}
+                  onChange={(e) => setProdutoSelecionado(e.target.value)}
+                  sx={{ mb: 4 }}
+                >
+                  <MenuItem value="Arroz">Arroz</MenuItem>
+                  <MenuItem value="Feijão">Feijão</MenuItem>
+                  <MenuItem value="Macarrão">Macarrão</MenuItem>
+                  <MenuItem value="Óleo">Óleo</MenuItem>
+                  <MenuItem value="Sabonete">Sabonete</MenuItem>
+                </TextField>
+
+                <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 2 }}>
+                  Estoque Mínimo
+                </Typography>
                 <TextField
                   fullWidth
                   size="small"
                   type="number"
                   value={estoqueMinimo}
                   onChange={(e) => setEstoqueMinimo(e.target.value)}
-                  placeholder="Digite o valor mínimo de estoque"
+                  placeholder="Digite o valor mínimo"
+                  sx={{ mb: 6 }}
                 />
+
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: '#004B8D',
+                    textTransform: 'none',
+                    '&:hover': { backgroundColor: '#F37335' }
+                  }}
+                  onClick={handleSalvarEstoque}
+                >
+                  Salvar
+                </Button>
               </Box>
             )}
           </Box>
@@ -103,23 +157,33 @@ function Configuracoes() {
         {/* Aba Mudar Senha */}
         {tabIndex === 1 && (
           <Box>
-            <img src={senhaImage} alt="Mudar Senha" className="mb-8 mx-auto" style={{ width: '220px' }} />
-            <Typography variant="h6" className="font-bold mb-10">
+            <Box display="flex" justifyContent="center" mb={8}>
+              <img src={senhaImage} alt="Mudar Senha" style={{ width: isMobile ? '180px' : '220px' }} />
+            </Box>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 8 }}>
               Alterar Senha
             </Typography>
             <Box mb={4}>
-              <Typography variant="body2" sx={{ fontWeight: 'bold' }} className="mb-1">Senha Atual</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>Senha Atual</Typography>
               <TextField fullWidth size="small" type="password" value={senhaAtual} onChange={(e) => setSenhaAtual(e.target.value)} />
             </Box>
             <Box mb={4}>
-              <Typography variant="body2" sx={{ fontWeight: 'bold' }} className="mb-1">Nova Senha</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>Nova Senha</Typography>
               <TextField fullWidth size="small" type="password" value={novaSenha} onChange={(e) => setNovaSenha(e.target.value)} />
             </Box>
             <Box mb={6}>
-              <Typography variant="body2" sx={{ fontWeight: 'bold' }} className="mb-1">Confirmar Nova Senha</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>Confirmar Nova Senha</Typography>
               <TextField fullWidth size="small" type="password" value={confirmarSenha} onChange={(e) => setConfirmarSenha(e.target.value)} />
             </Box>
-            <Button variant="contained" sx={{ backgroundColor: '#004B8D', textTransform: 'none', '&:hover': { backgroundColor: '#F37335' } }} onClick={handleSalvarSenha}>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: '#004B8D',
+                textTransform: 'none',
+                '&:hover': { backgroundColor: '#F37335' }
+              }}
+              onClick={handleSalvarSenha}
+            >
               Salvar Nova Senha
             </Button>
           </Box>
@@ -127,13 +191,26 @@ function Configuracoes() {
 
         {/* Aba Deletar Conta */}
         {tabIndex === 2 && (
-          <Box className="text-center">
-            <img src={deletarImage} alt="Deletar Conta" className="mb-8 mx-auto" style={{ width: '220px' }} />
-            <Typography variant="h6" className="font-bold mb-4">Deletar Conta</Typography>
-            <Typography variant="body2" className="text-gray-700 mb-6">
-              Ao deletar sua conta, todas as suas informações serão apagadas permanentemente. Essa ação não poderá ser desfeita.
+          <Box textAlign="center" mt={isMobile ? 6 : 0}>
+            <Box display="flex" justifyContent="center" mb={6}>
+              <img src={deletarImage} alt="Deletar Conta" style={{ width: isMobile ? '200px' : '240px' }} />
+            </Box>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 4 }}>
+              Deletar Conta
             </Typography>
-            <Button variant="contained" color="error" sx={{ textTransform: 'none', backgroundColor: '#d32f2f', '&:hover': { backgroundColor: '#b71c1c' } }} onClick={handleDeletarConta}>
+            <Typography variant="body2" sx={{ color: '#555', mb: 6 }}>
+              Ao deletar sua conta, todas as suas informações serão apagadas permanentemente.
+              <br />Essa ação não poderá ser desfeita.
+            </Typography>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: '#d32f2f',
+                textTransform: 'none',
+                '&:hover': { backgroundColor: '#b71c1c' }
+              }}
+              onClick={handleDeletarConta}
+            >
               Deletar Conta
             </Button>
           </Box>
@@ -142,8 +219,10 @@ function Configuracoes() {
         {/* Aba Termos */}
         {tabIndex === 3 && (
           <Box>
-            <Typography variant="h6" className="font-bold mb-4">Termos de Uso e Privacidade</Typography>
-            <Typography variant="body2" className="text-gray-700 whitespace-pre-line">
+            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 4 }}>
+              Termos de Uso e Privacidade
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#555', whiteSpace: 'pre-line' }}>
 {`
 Bem-vindo à nossa plataforma de gerenciamento de estoque para micro e pequenas empresas!
 

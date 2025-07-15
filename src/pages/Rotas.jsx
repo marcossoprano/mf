@@ -15,28 +15,25 @@ import {
   TableHead,
   TableRow,
   Paper,
-  InputAdornment
+  useMediaQuery
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import rotaImage from '../assets/images/rota.png';
 
 function Rotas() {
+  const [view, setView] = useState('gerenciar'); // 'gerenciar' | 'consultar'
   const [tabIndex, setTabIndex] = useState(0);
   const [formularios, setFormularios] = useState([{ id: 1 }]);
   const [destinosCadastro, setDestinosCadastro] = useState(['']);
   const [destinosSugestao, setDestinosSugestao] = useState(['']);
-
-  const handleTabChange = (event, newValue) => setTabIndex(newValue);
+  const isMobile = useMediaQuery('(max-width:768px)');
 
   const adicionarFormulario = () => setFormularios([...formularios, { id: formularios.length + 1 }]);
-
   const adicionarDestinoCadastro = () => setDestinosCadastro([...destinosCadastro, '']);
   const handleDestinoCadastroChange = (index, value) => {
     const novos = [...destinosCadastro];
     novos[index] = value;
     setDestinosCadastro(novos);
   };
-
   const adicionarDestinoSugestao = () => setDestinosSugestao([...destinosSugestao, '']);
   const handleDestinoSugestaoChange = (index, value) => {
     const novos = [...destinosSugestao];
@@ -50,18 +47,14 @@ function Rotas() {
         <Typography variant="body2" className="mb-1 font-medium">Previsão de tempo</Typography>
         <TextField fullWidth size="small" placeholder="Ex: 2h" />
       </Box>
-
       <Box>
         <Typography variant="body2" className="mb-1 font-medium">Nome do Motorista</Typography>
         <TextField fullWidth size="small" placeholder="Digite o nome do motorista" />
       </Box>
-
       <Box>
         <Typography variant="body2" className="mb-1 font-medium">Local de Partida</Typography>
         <TextField fullWidth size="small" placeholder="Ex: Mercadinho do José" />
       </Box>
-
-      {/* Destinos Dinâmicos - Cadastro Manual */}
       <Box className="md:col-span-2">
         <Typography variant="body2" className="mb-1 font-medium">Destinos</Typography>
         {destinosCadastro.map((dest, index) => (
@@ -90,12 +83,10 @@ function Rotas() {
           Adicionar outro destino
         </Button>
       </Box>
-
       <Box>
         <Typography variant="body2" className="mb-1 font-medium">Gasto com Gasolina</Typography>
         <TextField fullWidth size="small" placeholder="Ex: R$ 50,00" />
       </Box>
-
       <Box>
         <Typography variant="body2" className="mb-1 font-medium">Status</Typography>
         <TextField fullWidth size="small" placeholder="Ex: Em andamento" />
@@ -104,170 +95,145 @@ function Rotas() {
   );
 
   return (
-    <div className="flex">
+    <div className="flex bg-white min-h-screen">
       <Sidebar />
-
       <div className="flex-1 ml-0 lg:ml-64 p-8 font-sans">
-        {/* Botão Superior */}
-        <Box className="flex space-x-4 mb-12">
+        <Typography variant="h4" className="font-bold mb-16 text-gray-800" sx={{ fontSize: '32px' }}>
+          Rotas
+        </Typography>
+
+        {/* Botões no topo no estilo Estoque */}
+        <Box className="flex space-x-8 mb-12">
           <Button
-            variant="contained"
+            variant={view === 'gerenciar' ? 'contained' : 'text'}
             sx={{
-              backgroundColor: '#4BA9F7',
+              backgroundColor: view === 'gerenciar' ? '#4BA9F7' : 'transparent',
+              color: view === 'gerenciar' ? 'white' : '#4BA9F7',
+              fontWeight: view === 'gerenciar' ? 'bold' : 'normal',
               textTransform: 'none',
-              '&:hover': { backgroundColor: '#3590d8' },
+              '&:hover': view === 'gerenciar' ? { backgroundColor: '#3590d8' } : { backgroundColor: 'transparent' },
             }}
+            onClick={() => setView('gerenciar')}
           >
             Gerenciar Rotas
           </Button>
+
+          <Button
+            variant={view === 'consultar' ? 'contained' : 'text'}
+            sx={{
+              backgroundColor: view === 'consultar' ? '#4BA9F7' : 'transparent',
+              color: view === 'consultar' ? 'white' : '#4BA9F7',
+              fontWeight: view === 'consultar' ? 'bold' : 'normal',
+              textTransform: 'none',
+              '&:hover': view === 'consultar' ? { backgroundColor: '#3590d8' } : { backgroundColor: 'transparent' },
+            }}
+            onClick={() => setView('consultar')}
+          >
+            Consultar Rotas
+          </Button>
         </Box>
 
-        {/* Título */}
-        <Typography variant="h4" className="font-bold mb-8 text-gray-800" sx={{ fontSize: '32px' }}>
-          Gerencie suas rotas!
-        </Typography>
+        {/* GERENCIAR */}
+        {view === 'gerenciar' && (
+          <>
+            <Tabs value={tabIndex} onChange={(e, newValue) => setTabIndex(newValue)} textColor="primary" indicatorColor="primary" className="mb-6">
+              <Tab label="Gerar rota automaticamente" />
+              <Tab label="Cadastrar rota manualmente" />
+            </Tabs>
 
-        <div className="mb-8"></div>
-
-        {/* Tabs */}
-        <Tabs value={tabIndex} onChange={handleTabChange} textColor="primary" indicatorColor="primary" className="mb-6">
-          <Tab label="Gerar rota automaticamente" />
-          <Tab label="Cadastrar rota manualmente" />
-          <Tab label="Consultar Rotas" />
-        </Tabs>
-
-        {/* Aba 0 - Gerar rota automaticamente */}
-        {tabIndex === 0 && (
-          <Box className="flex flex-col items-center mt-8">
-            <img src={rotaImage} alt="Imagem Rota" className="mb-8 max-w-xs" />
-
-            <Box className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mb-6">
-              <Box>
-                <Typography variant="body2" className="mb-1 font-medium">Local de Partida</Typography>
-                <TextField fullWidth size="small" placeholder="Digite o local de partida" />
-              </Box>
-
-              <Box>
-                <Typography variant="body2" className="mb-1 font-medium">Nome do Motorista</Typography>
-                <TextField fullWidth size="small" placeholder="Digite o nome do motorista" />
-              </Box>
-
-              {/* Destinos Dinâmicos - Sugestão */}
-              <Box className="md:col-span-2">
-                <Typography variant="body2" className="mb-1 font-medium">Destinos</Typography>
-                {destinosSugestao.map((dest, index) => (
-                  <TextField
-                    key={index}
-                    fullWidth
-                    size="small"
-                    placeholder={`Digite o endereço do destino ${index + 1}`}
-                    value={dest}
-                    onChange={(e) => handleDestinoSugestaoChange(index, e.target.value)}
-                    className="mb-2"
-                  />
-                ))}
+            {tabIndex === 0 && (
+              <Box className="flex flex-col items-center mt-8">
+                <img src={rotaImage} alt="Imagem Rota" className="mb-8 max-w-xs" />
+                <Box className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mb-6">
+                  <Box>
+                    <Typography variant="body2" className="mb-1 font-medium">Local de Partida</Typography>
+                    <TextField fullWidth size="small" placeholder="Digite o local de partida" />
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" className="mb-1 font-medium">Nome do Motorista</Typography>
+                    <TextField fullWidth size="small" placeholder="Digite o nome do motorista" />
+                  </Box>
+                  <Box className="md:col-span-2">
+                    <Typography variant="body2" className="mb-1 font-medium">Destinos</Typography>
+                    {destinosSugestao.map((dest, index) => (
+                      <TextField
+                        key={index}
+                        fullWidth
+                        size="small"
+                        placeholder={`Digite o endereço do destino ${index + 1}`}
+                        value={dest}
+                        onChange={(e) => handleDestinoSugestaoChange(index, e.target.value)}
+                        className="mb-2"
+                      />
+                    ))}
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      sx={{
+                        textTransform: 'none',
+                        mt: 1,
+                        borderColor: '#c2c2c2',
+                        color: '#4B4B4B',
+                        '&:hover': { backgroundColor: '#f0f0f0' },
+                      }}
+                      onClick={adicionarDestinoSugestao}
+                    >
+                      Adicionar outro destino
+                    </Button>
+                  </Box>
+                </Box>
                 <Button
-                  variant="outlined"
-                  size="small"
+                  variant="contained"
                   sx={{
+                    backgroundColor: '#25AABF',
                     textTransform: 'none',
-                    mt: 1,
-                    borderColor: '#c2c2c2',
-                    color: '#4B4B4B',
-                    '&:hover': { backgroundColor: '#f0f0f0' },
+                    '&:hover': { backgroundColor: '#F37335' },
                   }}
-                  onClick={adicionarDestinoSugestao}
                 >
-                  Adicionar outro destino
+                  Gerar Rota
                 </Button>
               </Box>
-            </Box>
+            )}
 
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: '#25AABF',
-                textTransform: 'none',
-                '&:hover': { backgroundColor: '#F37335' },
-              }}
-            >
-              Gerar Rota
-            </Button>
-          </Box>
+            {tabIndex === 1 && (
+              <Box>
+                {formularios.map((form) => renderFormularioCadastro(form.id))}
+                <Box className="flex items-center mb-6">
+                  <Button
+                    variant="outlined"
+                    startIcon={<span>＋</span>}
+                    onClick={adicionarFormulario}
+                    sx={{
+                      textTransform: 'none',
+                      borderColor: '#c2c2c2',
+                      color: '#4B4B4B',
+                      '&:hover': { backgroundColor: '#f0f0f0' },
+                    }}
+                  >
+                    Adicione mais uma rota
+                  </Button>
+                </Box>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: '#25AABF',
+                    textTransform: 'none',
+                    '&:hover': { backgroundColor: '#1e90a3' },
+                  }}
+                >
+                  Cadastrar
+                </Button>
+              </Box>
+            )}
+          </>
         )}
 
-        {/* Aba 1 - Cadastrar rota manualmente */}
-        {tabIndex === 1 && (
-          <Box>
-            {formularios.map((form) => renderFormularioCadastro(form.id))}
-
-            <Box className="flex items-center mb-6">
-              <Button
-                variant="outlined"
-                startIcon={<span>＋</span>}
-                onClick={adicionarFormulario}
-                sx={{
-                  textTransform: 'none',
-                  borderColor: '#c2c2c2',
-                  color: '#4B4B4B',
-                  '&:hover': { backgroundColor: '#f0f0f0' },
-                }}
-              >
-                Adicione mais uma rota
-              </Button>
-            </Box>
-
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: '#25AABF',
-                textTransform: 'none',
-                '&:hover': { backgroundColor: '#1e90a3' },
-              }}
-            >
-              Cadastrar
-            </Button>
-          </Box>
-        )}
-
-        {/* Aba 2 - Consultar Rotas */}
-        {tabIndex === 2 && (
+        {/* CONSULTAR */}
+        {view === 'consultar' && (
           <>
             <Typography variant="h4" className="font-bold mb-8 text-gray-800" sx={{ fontSize: '32px' }}>
               Veja todas as suas rotas!
             </Typography>
-
-            <div className="mb-8"></div>
-
-            {/* Filtro + Pesquisa */}
-            <Box className="flex space-x-4 mb-6">
-              <TextField
-                select
-                size="small"
-                label="Filtrar por"
-                defaultValue=""
-                sx={{ minWidth: 150 }}
-              >
-                <MenuItem value="">Todos</MenuItem>
-                <MenuItem value="Concluída">Concluída</MenuItem>
-                <MenuItem value="A começar">A começar</MenuItem>
-                <MenuItem value="Em Andamento">Em Andamento</MenuItem>
-              </TextField>
-
-              <TextField
-                size="small"
-                placeholder="Digite o ID da rota ou nome do motorista..."
-                fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Box>
-
             <TableContainer component={Paper}>
               <Table>
                 <TableHead>
@@ -303,11 +269,7 @@ function Rotas() {
                             textTransform: 'none',
                             color: '#004B8D',
                             borderColor: '#004B8D',
-                            '&:hover': {
-                              backgroundColor: '#F37335',
-                              color: 'white',
-                              borderColor: '#F37335',
-                            },
+                            '&:hover': { backgroundColor: '#F37335', color: 'white', borderColor: '#F37335' },
                           }}
                           onClick={() => navigator.clipboard.writeText('iajdaijdajau')}
                         >
