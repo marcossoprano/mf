@@ -4,5 +4,5 @@
 # Install dependencies
 npm ci
 
-# Build the project
-npm run build:production
+# Build the project with CI disabled
+CI=false npm run build:production

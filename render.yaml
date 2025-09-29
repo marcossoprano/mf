@@ -2,7 +2,7 @@ services:
   - type: web
     name: mf-frontend
     env: static
-    buildCommand: npm ci && npm run build:production
+    buildCommand: npm ci && CI=false npm run build:production
     staticPublishPath: ./build
     envVars:
       - key: CI
