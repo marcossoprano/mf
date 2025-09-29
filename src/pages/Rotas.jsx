@@ -7,15 +7,13 @@ import {
   Tab,
   TextField,
   Typography,
-  MenuItem,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  useMediaQuery
+  Paper
 } from '@mui/material';
 import rotaImage from '../assets/images/rota.png';
 
@@ -25,7 +23,6 @@ function Rotas() {
   const [formularios, setFormularios] = useState([{ id: 1 }]);
   const [destinosCadastro, setDestinosCadastro] = useState(['']);
   const [destinosSugestao, setDestinosSugestao] = useState(['']);
-  const isMobile = useMediaQuery('(max-width:768px)');
 
   const adicionarFormulario = () => setFormularios([...formularios, { id: formularios.length + 1 }]);
   const adicionarDestinoCadastro = () => setDestinosCadastro([...destinosCadastro, '']);
