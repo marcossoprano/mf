@@ -2,7 +2,9 @@ services:
   - type: web
     name: mf-frontend
     env: static
-    buildCommand: npm install && npm run build
+    buildCommand: |
+      npm install --legacy-peer-deps --verbose &&
+      npx react-scripts build
     staticPublishPath: ./build
     envVars:
       - key: CI
@@ -11,6 +13,8 @@ services:
         value: false
       - key: NODE_ENV
         value: production
+      - key: NPM_CONFIG_LEGACY_PEER_DEPS
+        value: true
     headers:
       - path: /*
         name: X-Frame-Options
