@@ -3,8 +3,9 @@ services:
     name: mf-frontend
     env: static
     buildCommand: |
-      npm install --legacy-peer-deps --verbose &&
-      npx react-scripts build
+      export NODE_OPTIONS="--max_old_space_size=4096" &&
+      npm install --legacy-peer-deps &&
+      node --max_old_space_size=4096 node_modules/.bin/react-scripts build
     staticPublishPath: ./build
     envVars:
       - key: CI
@@ -15,6 +16,8 @@ services:
         value: production
       - key: NPM_CONFIG_LEGACY_PEER_DEPS
         value: true
+      - key: NODE_OPTIONS
+        value: "--max_old_space_size=4096"
     headers:
       - path: /*
         name: X-Frame-Options

@@ -3,10 +3,17 @@ set -e
 
 echo "=== Render Build Script Started ==="
 
+# Set memory optimization
+export NODE_OPTIONS="--max_old_space_size=4096"
+export CI=false
+export GENERATE_SOURCEMAP=false
+export DISABLE_ESLINT_PLUGIN=true
+
 # Print environment info
 echo "Node version: $(node --version)"
 echo "NPM version: $(npm --version)"
 echo "Current directory: $(pwd)"
+echo "Memory limit: $NODE_OPTIONS"
 
 # List package.json to verify it exists
 echo "=== Checking package.json ==="
@@ -18,23 +25,20 @@ else
     exit 1
 fi
 
-# Clean install with verbose logging
+# Clean npm cache to free memory
+echo "=== Cleaning npm cache ==="
+npm cache clean --force
+
+# Install with minimal logging to save memory
 echo "=== Installing dependencies ==="
-npm install --verbose --legacy-peer-deps
+npm install --legacy-peer-deps --silent --no-audit --no-fund
 
 # Verify react-scripts installation
 echo "=== Verifying react-scripts ==="
-npm list react-scripts
-ls -la node_modules/.bin/react-scripts || echo "react-scripts binary not found"
+npm list react-scripts --depth=0
 
-# Check if react-scripts can be executed
-echo "=== Testing react-scripts ==="
-npx react-scripts --version
-
-# Build the application
+# Build the application with memory optimization
 echo "=== Building application ==="
-export CI=false
-export GENERATE_SOURCEMAP=false
-npm run build:simple
+node --max_old_space_size=4096 node_modules/.bin/react-scripts build
 
 echo "=== Build completed successfully ==="
