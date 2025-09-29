@@ -23,8 +23,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "set CI=false && react-scripts build",
-    "build:ci": "react-scripts build",
+    "build": "cross-env CI=false react-scripts build",
+    "build:production": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
@@ -37,8 +37,8 @@
     ]
   },
   "engines": {
-    "node": ">=16.0.0 <=18.x",
-    "npm": ">=8.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   },
   "browserslist": {
     "production": [
@@ -54,6 +54,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",
+    "cross-env": "^10.0.0",
     "gh-pages": "^6.3.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.1"
